@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Braq</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/contact.css" />
+</head>
+<body class="contact-page">
+
+  <!-- Back link -->
+  <a href="index.html" class="back-link">← Braq</a>
+
+  <main class="contact">
+
+    <!-- Headline -->
+    <h1 class="contact-headline">let's get in touch</h1>
+
+    <!-- ================= FORM (middle) ================= -->
+    <section class="contact-form">
+
+      <form action="https://api.web3forms.com/submit" method="POST">
+
+  <!-- Web3Forms access key -->
+  <input type="hidden" name="access_key" value="42c5c56c-9c49-4152-9ec6-dba356b9d6ac">
+
+  <!-- Subject line for the email you'll receive -->
+  <input type="hidden" name="subject" value="New message from Braq contact form">
+
+  <!-- Honeypot spam protection -->
+  <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+
+  <div class="form-row">
+    <label>
+      <span class="field-label">First name</span>
+      <input type="text" name="first-name" required />
+    </label>
+    <label>
+      <span class="field-label">Last name</span>
+      <input type="text" name="last-name" required />
+    </label>
+  </div>
+
+  <label class="form-block">
+    <span class="field-label">Email</span>
+    <input type="email" name="email" required />
+  </label>
+
+  <label class="form-block">
+    <span class="field-label">Message</span>
+    <textarea name="message" rows="4" required></textarea>
+  </label>
+
+  <button type="submit" class="submit-btn">Send</button>
+
+</form>
+
+    </section>
+
+    <!-- ================= ICONS (bottom) ================= -->
+    <section class="contact-links">
+
+      <!-- EMAIL -->
+      <a class="contact-item" href="mailto:scottbraq@gmail.com" aria-label="Email">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="m2 7 10 6 10-6"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- INSTAGRAM -->
+      <a class="contact-item" href="https://www.instagram.com/scottbraq/" target="_blank" rel="noopener" aria-label="Instagram">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="5"/>
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="17.5" cy="6.5" r="0.8" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+      </a>
+
+      <!-- LINKEDIN — replace the href below with your LinkedIn URL -->
+      <a class="contact-item" href="YOUR_LINKEDIN_URL_HERE" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <span class="icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <path d="M7 10v7"/>
+            <circle cx="7" cy="7" r="0.9" fill="currentColor" stroke="none"/>
+            <path d="M11 17v-4a2 2 0 0 1 4 0v4"/>
+            <path d="M11 10v7"/>
+          </svg>
+        </span>
+      </a>
+
+    </section>
+
+  </main>
+
+</body>
+</html>

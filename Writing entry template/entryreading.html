@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading — Braq</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,700;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       READING PAGE — comfortable long-form reading, theme-aware
+       (extends the writing page design language)
+       ============================================================ */
+
+    /* ---------- Theme variables (same as writing page) ---------- */
+    :root {
+      --bg: #f4f1ea;
+      --text: #1a1a1a;
+      --text-muted: rgba(26, 26, 26, 0.55);
+      --rule: rgba(26, 26, 26, 0.15);
+      --accent: #e31f26;
+      --toggle-bg: transparent;
+      --toggle-border: rgba(26, 26, 26, 0.25);
+      --selection-bg: rgba(227, 31, 38, 0.12);
+      --code-bg: rgba(26, 26, 26, 0.04);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0a0a0a;
+      --text: #f4f1ea;
+      --text-muted: rgba(244, 241, 234, 0.55);
+      --rule: rgba(244, 241, 234, 0.15);
+      --accent: #e31f26;
+      --toggle-border: rgba(244, 241, 234, 0.25);
+      --selection-bg: rgba(227, 31, 38, 0.25);
+      --code-bg: rgba(244, 241, 234, 0.06);
+    }
+
+    /* ---------- Reset & base ---------- */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background-color: var(--selection-bg);
+      color: var(--text);
+    }
+
+    /* ---------- Fixed navigation elements ---------- */
+    .back-link {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 10;
+
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text);
+
+      transition: color 0.25s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 10;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 44px;
+      height: 44px;
+
+      background: var(--toggle-bg);
+      color: var(--text);
+
+      border: 1px solid var(--toggle-border);
+      border-radius: 50%;
+
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease, background-color 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle .toggle-icon {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+    }
+
+    .theme-toggle svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---------- Reading container ---------- */
+    .reading {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 9rem 2rem 7rem;
+    }
+
+    /* ---------- Article header ---------- */
+    .reading-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .reading-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .reading-date {
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .reading-category {
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.2em 0.65em;
+      border-radius: 99px;
+      line-height: 1.4;
+    }
+
+    .reading-title {
+      font-weight: 900;
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .reading-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 2.5rem 0;
+    }
+
+    /* ---------- Article body ---------- */
+    .reading-body {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .reading-body p {
+      margin-bottom: 1.6em;
+    }
+
+    .reading-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Drop cap for first paragraph */
+    .reading-body > p:first-of-type::first-letter {
+      float: left;
+      font-size: 4.2em;
+      line-height: 0.8;
+      padding-right: 0.12em;
+      padding-top: 0.08em;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* Blockquotes */
+    .reading-body blockquote {
+      margin: 2.2em 0;
+      padding: 0 0 0 1.5em;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .reading-body blockquote p {
+      margin-bottom: 0.8em;
+    }
+
+    .reading-body blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Headings within body */
+    .reading-body h2 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin: 2.2em 0 0.8em;
+    }
+
+    .reading-body h3 {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin: 2em 0 0.6em;
+    }
+
+    .reading-body h2:first-child,
+    .reading-body h3:first-child {
+      margin-top: 0;
+    }
+
+    /* Lists */
+    .reading-body ul,
+    .reading-body ol {
+      margin: 0 0 1.6em 1.5em;
+    }
+
+    .reading-body li {
+      margin-bottom: 0.4em;
+    }
+
+    .reading-body li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Inline emphasis */
+    .reading-body em {
+      font-style: italic;
+    }
+
+    .reading-body strong {
+      font-weight: 700;
+    }
+
+    /* Code / preformatted */
+    .reading-body code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+
+    .reading-body pre {
+      background: var(--code-bg);
+      padding: 1.2em 1.4em;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0 0 1.6em;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .reading-body pre code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+    }
+
+    /* Images / figures */
+    .reading-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 2em auto;
+      border-radius: 4px;
+    }
+
+    .reading-body figure {
+      margin: 2em 0;
+    }
+
+    .reading-body figcaption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.8em;
+      font-style: italic;
+    }
+
+    /* Horizontal rule within body */
+    .reading-body hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 2.5em auto;
+      width: 40%;
+    }
+
+    /* Links within body */
+    .reading-body a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .reading-body a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    /* ---------- Article footer ---------- */
+    .reading-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .reading-footer-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .reading-footer-nav a {
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    .reading-footer-nav a:hover {
+      color: var(--accent);
+    }
+
+    .reading-footer-nav .nav-arrow {
+      font-size: 1.1em;
+      line-height: 1;
+    }
+
+    /* ---------- Reading progress bar ---------- */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 20;
+      transition: width 0.1s linear;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 600px) {
+      .reading {
+        padding: 7rem 1.5rem 4rem;
+      }
+
+      .reading-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .reading-body {
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .reading-body > p:first-of-type::first-letter {
+        font-size: 3.4em;
+        padding-right: 0.1em;
+        padding-top: 0.05em;
+      }
+
+      .reading-body blockquote {
+        padding-left: 1.1em;
+        font-size: 1.02rem;
+      }
+
+      .back-link {
+        top: 1.25rem;
+        left: 1.25rem;
+      }
+
+      .theme-toggle {
+        top: 1.25rem;
+        right: 1.25rem;
+      }
+
+      .reading-footer-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+    }
+
+    /* ---------- Print styles ---------- */
+    @media print {
+      .back-link,
+      .theme-toggle,
+      .progress-bar,
+      .reading-footer-nav {
+        display: none !important;
+      }
+
+      .reading {
+        padding: 1rem 0;
+        max-width: 100%;
+      }
+
+      body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+      }
+
+      .reading-body > p:first-of-type::first-letter {
+        color: black;
+      }
+
+      .reading-body a {
+        color: black;
+        border-bottom: 1px solid #999;
+      }
+    }
+
+    /* ---------- Smooth scroll & focus ---------- */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading progress bar -->
+  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+
+  <!-- Back link -->
+  <a href="index.html" class="back-link">← Braq</a>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+    <span class="toggle-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+    </span>
+  </button>
+
+  <main class="reading">
+
+    <!-- Article header -->
+    <header class="reading-header">
+      <div class="reading-meta">
+        <span class="reading-date">January 2026</span>
+        <span class="reading-category">Essay</span>
+      </div>
+      <h1 class="reading-title">Dilemma of the Obsolete</h1>
+    </header>
+
+    <!-- Article body -->
+    <article class="reading-body">
+
+      <p>
+        From an artist’s viewpoint, having your camera ready, no matter how modest, is everything. 
+        It’s not about the megapixels or the latest sensor technology — it’s about being present, 
+        about capturing the fleeting moment before it dissolves into memory.
+      </p>
+
+      <p>
+        I remember the first camera I ever owned. A hand-me-down point-and-shoot with a cracked 
+        LCD screen and a zoom that sounded like a dying bee. By any modern standard, it was 
+        obsolete. And yet, some of the most vital images I’ve ever made came through that tiny, 
+        flawed lens.
+      </p>
+
+      <blockquote>
+        <p>
+          “The best camera is the one that’s with you.” — Chase Jarvis
+        </p>
+      </blockquote>
+
+      <p>
+        There’s a particular kind of freedom in using tools that don’t intimidate you. When the 
+        equipment is modest, the pressure to be perfect evaporates. You stop worrying about 
+        technical perfection and start paying attention to light, to composition, to the quiet 
+        drama of everyday life.
+      </p>
+
+      <h2>The weight of expectation</h2>
+
+      <p>
+        We live in an age of abundance. Every year, new cameras are released with more dynamic 
+        range, faster autofocus, higher resolution. The message is clear: what you have is not 
+        enough. But that message is a lie — or at least, a distraction.
+      </p>
+
+      <p>
+        The dilemma of the obsolete is not really about the tool. It’s about the stories we tell 
+        ourselves about what we need in order to create. The camera doesn’t make the photograph. 
+        The eye does. The heart does. The willingness to stop and look does.
+      </p>
+
+      <hr>
+
+      <p>
+        So here’s to the cracked screens, the sticky shutters, the lenses with a little fungus 
+        around the edges. Here’s to the cameras that have been dropped, scratched, and loved. 
+        They’re not obsolete. They’re just getting started.
+      </p>
+
+    </article>
+
+    <!-- Article footer -->
+    <footer class="reading-footer">
+      <nav class="reading-footer-nav" aria-label="Article navigation">
+        <a href="writing.html">
+          <span class="nav-arrow" aria-hidden="true">←</span>
+          All writing
+        </a>
+        <a href="entry-02.html">
+          Next entry
+          <span class="nav-arrow" aria-hidden="true">→</span>
+        </a>
+      </nav>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      'use strict';
+
+      /* ---------- Theme toggle (persisted via localStorage) ---------- */
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      // Restore saved theme
+      const savedTheme = localStorage.getItem('braq-theme');
+      if (savedTheme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+      }
+
+      themeToggle.addEventListener('click', function() {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          html.removeAttribute('data-theme');
+          localStorage.setItem('braq-theme', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          localStorage.setItem('braq-theme', 'dark');
+        }
+      });
+
+      /* ---------- Reading progress bar ---------- */
+      const progressBar = document.getElementById('progressBar');
+
+      function updateProgress() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+      }
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      window.addEventListener('resize', updateProgress, { passive: true });
+      updateProgress(); // initial call
+
+      /* ---------- Optional: keyboard shortcut for theme toggle ---------- */
+      document.addEventListener('keydown', function(e) {
+        // Press "t" to toggle theme (only when not typing in an input)
+        if (e.key === 't' || e.key === 'T') {
+          const target = e.target;
+          if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+            return;
+          }
+          themeToggle.click();
+        }
+      });
+
+    })();
+  </script>
+
+</body>
+</html>

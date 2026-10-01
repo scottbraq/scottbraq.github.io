@@ -1,0 +1,79 @@
+/* ---------- Reset ---------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ---------- Page ---------- */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-color: #f4f1ea;
+  font-family: 'Inter', Arial, sans-serif;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+
+  padding-bottom: 6vh;
+  padding-left: 5vw;
+  padding-right: 5vw;
+
+  overflow: hidden;
+  position: relative;
+}
+
+/* ---------- Wordmark ---------- */
+.wordmark {
+  display: flex;
+  align-items: baseline;
+
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 900;
+
+  letter-spacing: -0.11em;
+  font-size: 41.67vw;
+  line-height: 0.85;
+  color: #1a1a1a;
+  user-select: none;
+  max-width: 100%;
+
+  /* Reduced so wordmark bottom sits back at ~220px from edge */
+  margin-bottom: 22vh;
+}
+
+/* ---------- Letters ---------- */
+.letter {
+  color: #1a1a1a;
+  text-decoration: none;
+  transition: color 0.25s ease;
+  display: inline-block;
+}
+
+/* ---------- Hover colors ---------- */
+.letter.b:hover { color: #e31f26; }
+.letter.r:hover { color: #ebd3a2; }
+.letter.a:hover { color: #8fa071; }
+.letter.q:hover { color: #a36aa5; }
+
+/* ---------- Footer ---------- */
+.footer {
+  position: absolute;
+  bottom: 2vh;
+  left: 50%;
+  transform: translateX(-50%);
+
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 400;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  color: #1a1a1a;
+  opacity: 0.7;
+
+  user-select: none;
+}

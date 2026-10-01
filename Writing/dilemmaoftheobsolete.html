@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dilemma of the Obsolete — Braq</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --text: #1a1a1a;
+      --muted: rgba(26, 26, 26, 0.55);
+      --rule: rgba(26, 26, 26, 0.15);
+      --accent: #e31f26;
+      --toggle-border: rgba(26, 26, 26, 0.25);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0a0a0a;
+      --text: #f4f1ea;
+      --muted: rgba(244, 241, 234, 0.55);
+      --rule: rgba(244, 241, 234, 0.15);
+      --toggle-border: rgba(244, 241, 234, 0.25);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* ---------- Fixed nav ---------- */
+    .back-link {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 10;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.25s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--toggle-border);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    /* ---------- Article ---------- */
+    .reading {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 9rem 2rem 6rem;
+    }
+
+    .reading-date {
+      display: block;
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .reading-title {
+      font-weight: 900;
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 3rem;
+    }
+
+    .reading-body p {
+      margin-bottom: 1.6em;
+    }
+
+    .reading-body blockquote {
+      margin: 2em 0;
+      padding-left: 1.5em;
+      border-left: 2px solid var(--accent);
+      font-style: italic;
+      color: var(--muted);
+    }
+
+    .reading-body hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3em auto;
+      width: 40%;
+    }
+
+    /* ---------- Footer ---------- */
+    .reading-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .reading-footer a {
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.25s ease;
+    }
+
+    .reading-footer a:hover {
+      color: var(--accent);
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 600px) {
+      .reading {
+        padding: 7rem 1.5rem 4rem;
+      }
+
+      .reading-title {
+        margin-bottom: 2rem;
+      }
+
+      .back-link {
+        top: 1.25rem;
+        left: 1.25rem;
+      }
+
+      .theme-toggle {
+        top: 1.25rem;
+        right: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../writing.html" class="back-link">← Writing</a>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+    </svg>
+  </button>
+
+  <main class="reading">
+
+    <header>
+      <span class="reading-date">January 2026</span>
+      <h1 class="reading-title">Dilemma of the Obsolete</h1>
+    </header>
+
+    <article class="reading-body">
+
+      <p>
+        From an artist's viewpoint, having your camera ready, no matter how modest, is everything.
+        It's not about the megapixels or the latest sensor technology — it's about being present,
+        about capturing the fleeting moment before it dissolves into memory.
+      </p>
+
+      <p>
+        I remember the first camera I ever owned. A hand-me-down point-and-shoot with a cracked
+        LCD screen and a zoom that sounded like a dying bee. By any modern standard, it was
+        obsolete. And yet, some of the most vital images I've ever made came through that tiny,
+        flawed lens.
+      </p>
+
+      <blockquote>
+        <p>"The best camera is the one that's with you." — Chase Jarvis</p>
+      </blockquote>
+
+      <p>
+        There's a particular kind of freedom in using tools that don't intimidate you. When the
+        equipment is modest, the pressure to be perfect evaporates. You stop worrying about
+        technical perfection and start paying attention to light, to composition, to the quiet
+        drama of everyday life.
+      </p>
+
+      <p>
+        We live in an age of abundance. Every year, new cameras are released with more dynamic
+        range, faster autofocus, higher resolution. The message is clear: what you have is not
+        enough. But that message is a lie — or at least, a distraction.
+      </p>
+
+      <p>
+        The dilemma of the obsolete is not really about the tool. It's about the stories we tell
+        ourselves about what we need in order to create. The camera doesn't make the photograph.
+        The eye does. The heart does. The willingness to stop and look does.
+      </p>
+
+      <hr>
+
+      <p>
+        So here's to the cracked screens, the sticky shutters, the lenses with a little fungus
+        around the edges. Here's to the cameras that have been dropped, scratched, and loved.
+        They're not obsolete. They're just getting started.
+      </p>
+
+    </article>
+
+    <footer class="reading-footer">
+      <a href="../writing.html">← All writing</a>
+    </footer>
+
+  </main>
+
+  <script>
+    (function () {
+      const toggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      if (localStorage.getItem('braq-theme') === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+      }
+
+      toggle.addEventListener('click', function () {
+        if (html.getAttribute('data-theme') === 'dark') {
+          html.removeAttribute('data-theme');
+          localStorage.setItem('braq-theme', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          localStorage.setItem('braq-theme', 'dark');
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

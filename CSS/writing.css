@@ -1,0 +1,211 @@
+/* ============================================================
+   WRITING PAGE — layout, entries, and light/dark theming
+   ============================================================ */
+
+/* ---------- Theme variables ---------- */
+:root {
+  --bg: #f4f1ea;              /* default: off-white (matches site) */
+  --text: #1a1a1a;
+  --text-muted: rgba(26, 26, 26, 0.55);
+  --rule: rgba(26, 26, 26, 0.15);
+  --accent: #e31f26;
+  --toggle-bg: transparent;
+  --toggle-border: rgba(26, 26, 26, 0.25);
+}
+
+/* Dark mode overrides — applied when <html> has data-theme="dark" */
+html[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --text: #f4f1ea;
+  --text-muted: rgba(244, 241, 234, 0.55);
+  --rule: rgba(244, 241, 234, 0.15);
+  --accent: #e31f26;
+  --toggle-border: rgba(244, 241, 234, 0.25);
+}
+
+/* ---------- Page base ---------- */
+.writing-page {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', Arial, sans-serif;
+
+  /* Override homepage flex-center layout */
+  display: block;
+  padding: 0;
+  overflow: visible;
+  height: auto;
+  min-height: 100vh;
+
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ---------- Back link ---------- */
+.back-link {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: var(--text);
+
+  transition: color 0.25s ease;
+}
+
+.back-link:hover {
+  color: var(--accent);
+}
+
+/* ---------- Theme toggle ---------- */
+.theme-toggle {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 44px;
+  height: 44px;
+
+  background: var(--toggle-bg);
+  color: var(--text);
+
+  border: 1px solid var(--toggle-border);
+  border-radius: 50%;
+
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background-color 0.3s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.theme-toggle .toggle-icon {
+  display: inline-flex;
+  width: 20px;
+  height: 20px;
+}
+
+.theme-toggle svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Container ---------- */
+.writing {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 8rem 2rem 6rem;
+}
+
+/* ---------- Header ---------- */
+.writing-header {
+  margin-bottom: 5rem;
+}
+
+.writing-title {
+  font-weight: 900;
+  font-size: clamp(3rem, 10vw, 6rem);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+
+.writing-subtitle {
+  font-weight: 400;
+  font-size: 1rem;
+  color: var(--text-muted);
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Entries list ---------- */
+.entries {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry {
+  display: block;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--rule);
+
+  text-decoration: none;
+  color: var(--text);
+
+  transition: color 0.25s ease;
+}
+
+.entry:last-child {
+  border-bottom: 1px solid var(--rule);
+}
+
+.entry:hover {
+  color: var(--accent);
+}
+
+.entry-date {
+  display: block;
+
+  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+
+  color: var(--text-muted);
+  margin-bottom: 0.75rem;
+
+  transition: color 0.25s ease;
+}
+
+.entry:hover .entry-date {
+  color: var(--accent);
+}
+
+.entry-title {
+  font-weight: 700;
+  font-size: clamp(1.4rem, 3.5vw, 1.9rem);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-bottom: 0.75rem;
+}
+
+.entry-excerpt {
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .writing {
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .writing-header {
+    margin-bottom: 3rem;
+  }
+
+  .back-link {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+
+  .theme-toggle {
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .entry {
+    padding: 2rem 0;
+  }
+}

@@ -1,0 +1,172 @@
+/* ---------- About page base ---------- */
+.about-page {
+  background-color: #f4f1ea;
+  font-family: 'Inter', Arial, sans-serif;
+  color: #1a1a1a;
+
+  /* Override the homepage's flex-center layout */
+  display: block;
+  padding: 0;
+  overflow: visible;
+  height: auto;
+}
+
+/* ---------- Back link ---------- */
+.back-link {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  z-index: 10;
+
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  color: #1a1a1a;
+
+  transition: color 0.25s ease;
+}
+
+.back-link:hover {
+  color: #e31f26;
+}
+
+/* ---------- CV container ---------- */
+.cv {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 8rem 2rem 8rem;
+}
+
+/* ---------- Header ---------- */
+.cv-header {
+  margin-bottom: 5rem;
+}
+
+.cv-name {
+  font-weight: 900;
+  font-size: clamp(3rem, 10vw, 6rem);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+  margin-bottom: 1rem;
+}
+
+.cv-tagline {
+  font-weight: 400;
+  font-size: 1rem;
+  opacity: 0.6;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Section ---------- */
+.cv-section {
+  margin-bottom: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(26, 26, 26, 0.15);
+}
+
+.cv-heading {
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  margin-bottom: 2rem;
+}
+
+/* ---------- Entries ---------- */
+.cv-entry {
+  margin-bottom: 1.75rem;
+}
+
+.cv-entry h3 {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.25rem;
+}
+
+.cv-meta {
+  font-weight: 400;
+  font-size: 0.9rem;
+  opacity: 0.65;
+  line-height: 1.5;
+}
+
+.cv-body {
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  max-width: 60ch;
+}
+
+/* ---------- Lists ---------- */
+.cv-list {
+  list-style: none;
+  padding: 0;
+}
+
+.cv-list li {
+  font-weight: 400;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.cv-list li::before {
+  content: "—";
+  position: absolute;
+  left: 0;
+  opacity: 0.4;
+}
+
+/* ---------- Info list (contact) ---------- */
+.cv-info {
+  list-style: none;
+  padding: 0;
+}
+
+.cv-info li {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.cv-info span {
+  font-weight: 500;
+  opacity: 0.5;
+}
+
+.cv-info a {
+  color: #1a1a1a;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.25);
+  transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.cv-info a:hover {
+  color: #e31f26;
+  border-color: #e31f26;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .cv {
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .cv-info li {
+    grid-template-columns: 1fr;
+    gap: 0.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .back-link {
+    top: 1.25rem;
+    left: 1.25rem;
+  }
+}
