@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading — Braq</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,700;0,14..32,900;1,14..32,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================================
+       READING PAGE — comfortable long-form reading, theme-aware
+       (extends the writing page design language)
+       ============================================================ */
+
+    /* ---------- Theme variables (same as writing page) ---------- */
+    :root {
+      --bg: #f4f1ea;
+      --text: #1a1a1a;
+      --text-muted: rgba(26, 26, 26, 0.55);
+      --rule: rgba(26, 26, 26, 0.15);
+      --accent: #e31f26;
+      --toggle-bg: transparent;
+      --toggle-border: rgba(26, 26, 26, 0.25);
+      --selection-bg: rgba(227, 31, 38, 0.12);
+      --code-bg: rgba(26, 26, 26, 0.04);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #0a0a0a;
+      --text: #f4f1ea;
+      --text-muted: rgba(244, 241, 234, 0.55);
+      --rule: rgba(244, 241, 234, 0.15);
+      --accent: #e31f26;
+      --toggle-border: rgba(244, 241, 234, 0.25);
+      --selection-bg: rgba(227, 31, 38, 0.25);
+      --code-bg: rgba(244, 241, 234, 0.06);
+    }
+
+    /* ---------- Reset & base ---------- */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', Arial, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background-color: var(--selection-bg);
+      color: var(--text);
+    }
+
+    /* ---------- Fixed navigation elements ---------- */
+    .back-link {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 10;
+
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      color: var(--text);
+
+      transition: color 0.25s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 10;
+
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 44px;
+      height: 44px;
+
+      background: var(--toggle-bg);
+      color: var(--text);
+
+      border: 1px solid var(--toggle-border);
+      border-radius: 50%;
+
+      cursor: pointer;
+      transition: color 0.25s ease, border-color 0.25s ease, background-color 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .theme-toggle .toggle-icon {
+      display: inline-flex;
+      width: 20px;
+      height: 20px;
+    }
+
+    .theme-toggle svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ---------- Reading container ---------- */
+    .reading {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 9rem 2rem 7rem;
+    }
+
+    /* ---------- Article header ---------- */
+    .reading-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .reading-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .reading-date {
+      font-weight: 500;
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .reading-category {
+      font-weight: 500;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.2em 0.65em;
+      border-radius: 99px;
+      line-height: 1.4;
+    }
+
+    .reading-title {
+      font-weight: 900;
+      font-size: clamp(2rem, 5.5vw, 3.4rem);
+      letter-spacing: -0.04em;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .reading-divider {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 2.5rem 0;
+    }
+
+    /* ---------- Article body ---------- */
+    .reading-body {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .reading-body p {
+      margin-bottom: 1.6em;
+    }
+
+    .reading-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Drop cap for first paragraph */
+    .reading-body > p:first-of-type::first-letter {
+      float: left;
+      font-size: 4.2em;
+      line-height: 0.8;
+      padding-right: 0.12em;
+      padding-top: 0.08em;
+      font-weight: 900;
+      color: var(--accent);
+    }
+
+    /* Blockquotes */
+    .reading-body blockquote {
+      margin: 2.2em 0;
+      padding: 0 0 0 1.5em;
+      border-left: 3px solid var(--accent);
+      font-style: italic;
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .reading-body blockquote p {
+      margin-bottom: 0.8em;
+    }
+
+    .reading-body blockquote p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Headings within body */
+    .reading-body h2 {
+      font-weight: 700;
+      font-size: 1.6rem;
+      letter-spacing: -0.03em;
+      line-height: 1.25;
+      margin: 2.2em 0 0.8em;
+    }
+
+    .reading-body h3 {
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      margin: 2em 0 0.6em;
+    }
+
+    .reading-body h2:first-child,
+    .reading-body h3:first-child {
+      margin-top: 0;
+    }
+
+    /* Lists */
+    .reading-body ul,
+    .reading-body ol {
+      margin: 0 0 1.6em 1.5em;
+    }
+
+    .reading-body li {
+      margin-bottom: 0.4em;
+    }
+
+    .reading-body li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Inline emphasis */
+    .reading-body em {
+      font-style: italic;
+    }
+
+    .reading-body strong {
+      font-weight: 700;
+    }
+
+    /* Code / preformatted */
+    .reading-body code {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.9em;
+      background: var(--code-bg);
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+
+    .reading-body pre {
+      background: var(--code-bg);
+      padding: 1.2em 1.4em;
+      border-radius: 6px;
+      overflow-x: auto;
+      margin: 0 0 1.6em;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .reading-body pre code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+    }
+
+    /* Images / figures */
+    .reading-body img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 2em auto;
+      border-radius: 4px;
+    }
+
+    .reading-body figure {
+      margin: 2em 0;
+    }
+
+    .reading-body figcaption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 0.8em;
+      font-style: italic;
+    }
+
+    /* Horizontal rule within body */
+    .reading-body hr {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 2.5em auto;
+      width: 40%;
+    }
+
+    /* Links within body */
+    .reading-body a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .reading-body a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    /* ---------- Article footer ---------- */
+    .reading-footer {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+    }
+
+    .reading-footer-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .reading-footer-nav a {
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4em;
+    }
+
+    .reading-footer-nav a:hover {
+      color: var(--accent);
+    }
+
+    .reading-footer-nav .nav-arrow {
+      font-size: 1.1em;
+      line-height: 1;
+    }
+
+    /* ---------- Reading progress bar ---------- */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--accent);
+      z-index: 20;
+      transition: width 0.1s linear;
+      border-radius: 0 2px 2px 0;
+    }
+
+    /* ---------- Mobile ---------- */
+    @media (max-width: 600px) {
+      .reading {
+        padding: 7rem 1.5rem 4rem;
+      }
+
+      .reading-header {
+        margin-bottom: 2.5rem;
+      }
+
+      .reading-body {
+        font-size: 1rem;
+        line-height: 1.8;
+      }
+
+      .reading-body > p:first-of-type::first-letter {
+        font-size: 3.4em;
+        padding-right: 0.1em;
+        padding-top: 0.05em;
+      }
+
+      .reading-body blockquote {
+        padding-left: 1.1em;
+        font-size: 1.02rem;
+      }
+
+      .back-link {
+        top: 1.25rem;
+        left: 1.25rem;
+      }
+
+      .theme-toggle {
+        top: 1.25rem;
+        right: 1.25rem;
+      }
+
+      .reading-footer-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+    }
+
+    /* ---------- Print styles ---------- */
+    @media print {
+      .back-link,
+      .theme-toggle,
+      .progress-bar,
+      .reading-footer-nav {
+        display: none !important;
+      }
+
+      .reading {
+        padding: 1rem 0;
+        max-width: 100%;
+      }
+
+      body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+      }
+
+      .reading-body > p:first-of-type::first-letter {
+        color: black;
+      }
+
+      .reading-body a {
+        color: black;
+        border-bottom: 1px solid #999;
+      }
+    }
+
+    /* ---------- Smooth scroll & focus ---------- */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Reading progress bar -->
+  <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+
+  <!-- Back link -->
+  <a href="../index.html" class="back-link">← Braq</a>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+    <span class="toggle-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+    </span>
+  </button>
+
+  <main class="reading">
+
+    <!-- Article header -->
+    <header class="reading-header">
+      <div class="reading-meta">
+        <span class="reading-date">January 2026</span>
+        <span class="reading-category">Essay</span>
+      </div>
+      <h1 class="reading-title">Eugene Hyde The Jamaican Modernist</h1>
+    </header>
+
+    <!-- Article body -->
+    <article class="reading-body">
+
+        <h1> Eugene Hyde: The Jamaican Modernist Who Validated a Boys Dreams </h1>
+
+      <p>
+        There are moments in childhood when art becomes more than just images on a wall,
+         when it becomes a mirror that reflects back possibilities you didn't know existed.
+          For me, that moment came in the National Gallery of Jamaica, standing before Eugene
+           Hyde's "Jelly Man," an etching that spoke in a visual language I had never encountered
+            in Jamaican art before. Its loose, abstract lines moved with an energy that 
+            reminded me of the anime I loved, yet it was unmistakably Caribbean, unmistakably us. 
+            In that piece, I saw validation: a Jamaican artist who dared to be different, 
+            who proved that being true to your artistic vision and being Jamaican weren't contradictions,
+             they were complementary truths.
+      </p>
+
+      <h2>The Making of a Modernist</h2>
+
+      <p>
+        Eugene Siedel Hyde was born on January 25, 1931, in Cooper's Hill, Portland, to John Hyde,
+         a respected photographer in Port Antonio, and Ivy Larman. His mother would later recall that
+          even as a child, Eugene possessed an unmistakable gift. The way he colored cartoon figures 
+          in children's books was "special," and by age nine, he was already creating art for 
+          hospitals, nurseries, and schools in his community.
+      </p>
+
+      <p>
+        Growing up in Port Antonio, young Hyde was captivated by the vibrant spectacle of Jonkanoo 
+        bands that traveled through town during the Christmas and New Year season. His mother 
+        remembered how he "always took a distinct interest in the exciting colours and designs 
+        which were displayed," while also observing "poverty and how the average man worked for a 
+        living." These early impressions (the explosive color of Jonkanoo, the rhythms of 
+        ordinary Jamaican life) would simmer beneath the surface of his later abstract work.
+      </p>
+
+      <h2>The American Years and the Return Home</h2>
+
+      <p>
+        That hunger for something more led Hyde to Los Angeles in 1953, where he studied Advertising 
+        Design at the Art Center School, followed by a major in Graphic Art and Painting at the Los 
+        Angeles County Art Institute from 1955 to 1960, ultimately earning his Master's Degree in 
+        Fine Arts. After his first solo exhibition at the Conde Gallery in Hollywood, Hyde returned 
+        to Jamaica in 1960, initially struggling to find teaching positions before returning to Art 
+        and Publicity Service as Art Director.
+      </p>
+
+      <p>
+        But here's where Hyde's story becomes particularly poignant: despite his American education 
+        and success, he felt "culturally out of touch" after spending so much time away from Jamaica. 
+        He hadn't applied his fine art background, and it took two years for him to re-immerse himself 
+        in "the movement and rhythm of Jamaica" and begin his career as a serious fine artist. This 
+        detail reveals something essential about Hyde. His modernism wasn't about abandoning Jamaica 
+        for international styles; it was about finding a visual language that could express his 
+        Jamaican experience in contemporary terms.
+
+      <hr>
+
+      <h2>Breaking New Ground</h2>
+
+      <p>
+        In 1963, Hyde accomplished his first solo exhibition in Jamaica at the Institute of Jamaica 
+        (55 works including paintings, drawings, etchings, architectural ceramics, and murals). 
+        That same year, he co-founded the Contemporary Jamaica Artists' Association (CJAA) with Karl 
+        Parboosingh and Barrington Watson, an organization dedicated to professionalizing Jamaican 
+        art and elevating it to international standards.
+      </p>
+
+      <p>Hyde's style was revolutionary for its time. His abstract representations of the human 
+        figure were "unusual and foreign" to some Jamaican viewers, but others recognized his 
+        expressive draughtsmanship as "possibly the beginnings of a shift in the current visual 
+        art paradigm of the day." Described as a "quiet and systematic worker," Hyde was possibly 
+        the first Jamaican artist to work serially, creating multiple works based on a single theme. 
+        His Flora series (1969 to 1973) brought him public recognition, followed by his celebrated Croton Series in 1974.
+    </p>
+
+    <h2>The Visionary and the Teacher</h2>
+
+    <p>Beyond his own practice, Hyde was instrumental in shaping Jamaica's art infrastructure. He taught part time at the Jamaica School of Art, though he was critical of its methodology, believing artists needed to be educated in history and understand their relationship to society. He held extra classes for young artists at his home, "Hyde a Way" on Old Stony Hill Road. In 1970, he established the John Peartree Gallery to give artists engaged in "creative experimentation" a space to display their work, a radical gesture that acknowledged not all art needed to look the same or serve the same purpose.</p>
+
+    <p>Hyde also brought international artists to exhibit in Jamaica during the sixties and seventies, and in 1970, he traveled throughout the Caribbean with his wife Beth and fellow artists to establish cultural exchanges and attend the first Biennial of Latin American Graphics in Puerto Rico. He understood that Jamaican art could be both distinctly local and internationally engaged.</p>
+
+    <h2>Why "Jelly Man" Mattered to a Boy Who Loved Anime</h2>
+
+    <p>When I encountered "Jelly Man" in the National Gallery as a boy, I was already deep into anime, those Japanese animations with their fluid movement, expressive line work, and willingness to distort reality in service of emotion. What shocked me about Hyde's etching was that here was a Jamaican artist working with similar sensibilities: loose, abstract lines that suggested rather than dictated, forms that moved and breathed rather than stood rigidly in place.</p>
+
+    <p>The piece validated something I hadn't known needed validation. As a Jamaican boy who loved anime and art, I existed in a kind of cultural limbo. My tastes felt foreign, imported, not quite "ours." But Hyde's work proved that abstraction, experimentation, and that particular kind of expressive freedom weren't the exclusive property of Japanese or Western artists. A Jamaican artist could create work that operated in that same visual language, that same emotional register, while remaining rooted in Caribbean experience.</p>
+
+    <p>Hyde's etchings, with their gestural quality and emphasis on capturing movement and essence over literal representation, shared something fundamental with the anime I loved: both were willing to sacrifice photographic accuracy for emotional truth. Both understood that sometimes you capture reality better by distorting it.</p>
+
+    <h2>A Legacy Cut Short</h2>
+
+    <p>On July 15, 1980, tragedy struck when Eugene Hyde drowned at Hellshire Beach while on an outing with his wife and three children. He was only 49 years old, at what should have been the height of his creative powers.</p>
+
+    <p>The art community responded with an outpouring of recognition. Posthumous exhibitions were held at Gallery Barrington in 1981 and the John Peartree Gallery in 1982. In 1983, he was posthumously awarded the Silver Musgrave Medal by the Institute of Jamaica. In 1984, the National Gallery of Jamaica mounted a major retrospective: "Eugene Hyde 1931 to 1980: A Retrospective."</p>
+
+    <h2>The Gift Hyde Gave Us</h2>
+
+    <p>What Eugene Hyde understood, and what I absorbed standing before "Jelly Man" without fully articulating it at the time, was that Jamaican artists didn't have to choose between being authentically Caribbean and being formally innovative. We didn't have to paint only what Jamaican art was "supposed" to look like. Hyde's abstract figures, his serial explorations, his willingness to let forms dissolve into gesture and suggestion, all of this expanded what Jamaican art could be.</p>
+    
+    <p>For a boy who loved anime and art, who felt caught between the culture I was born into and the visual languages that moved me, Hyde's work was permission. Permission to love what I loved without apology. Permission to imagine myself as an artist who could draw from multiple traditions. Permission to believe that being Jamaican meant having the freedom to create in any visual language that expressed my truth.</p>
+
+    <p>Eugene Hyde died too young, but his work remains in the National Gallery's permanent collection, including "Jelly Man," that etching that stopped a boy in his tracks and whispered: You belong here. Your vision is valid. Make the art only you can make. </p>
+
+    <p>That's the gift Hyde gave to Jamaican art, and the gift he gave to me: the understanding that the most Jamaican thing you can do as an artist is to be fearlessly, unapologetically yourself.</p>
+
+    </article>
+
+    <!-- Article footer -->
+    <footer class="reading-footer">
+      <nav class="reading-footer-nav" aria-label="Article navigation">
+        <a href="writing.html">
+          <span class="nav-arrow" aria-hidden="true">←</span>
+          All writing
+        </a>
+        <a href="dilemmaoftheobsolete.html">
+          Next entry
+          <span class="nav-arrow" aria-hidden="true">→</span>
+        </a>
+      </nav>
+    </footer>
+
+  </main>
+
+  <script>
+    (function() {
+      'use strict';
+
+      /* ---------- Theme toggle (persisted via localStorage) ---------- */
+      const themeToggle = document.getElementById('themeToggle');
+      const html = document.documentElement;
+
+      // Restore saved theme
+      const savedTheme = localStorage.getItem('braq-theme');
+      if (savedTheme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+      }
+
+      themeToggle.addEventListener('click', function() {
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+          html.removeAttribute('data-theme');
+          localStorage.setItem('braq-theme', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          localStorage.setItem('braq-theme', 'dark');
+        }
+      });
+
+      /* ---------- Reading progress bar ---------- */
+      const progressBar = document.getElementById('progressBar');
+
+      function updateProgress() {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+        progressBar.style.width = progress + '%';
+      }
+
+      window.addEventListener('scroll', updateProgress, { passive: true });
+      window.addEventListener('resize', updateProgress, { passive: true });
+      updateProgress(); // initial call
+
+      /* ---------- Optional: keyboard shortcut for theme toggle ---------- */
+      document.addEventListener('keydown', function(e) {
+        // Press "t" to toggle theme (only when not typing in an input)
+        if (e.key === 't' || e.key === 'T') {
+          const target = e.target;
+          if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
+            return;
+          }
+          themeToggle.click();
+        }
+      });
+
+    })();
+  </script>
+
+</body>
+</html>
