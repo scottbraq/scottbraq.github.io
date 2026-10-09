@@ -2,62 +2,41 @@
    Works page interactions
    ------------------------------------------------------------
    - Wheel / trackpad scrolls the image strip horizontally
-   - "Index" word toggles between side-scroll and grid view
-   - Clicking a grid image jumps to it in the scroll view
-   - Escape closes the grid view
+   - Smooth, eased motion for a more premium feel
    ============================================================ */
 
 (function () {
   const strip = document.getElementById('worksStrip');
-  const toggle = document.getElementById('indexToggle');
-  const body = document.body;
 
   /* ---------- Wheel / trackpad → horizontal scroll ---------- */
-  strip.addEventListener('wheel', function (e) {
-    if (body.classList.contains('index-open')) return;
-    e.preventDefault();
-    strip.scrollLeft += e.deltaY;
-  }, { passive: false });
+  let target = 0;
+  let current = 0;
+  let rafId = null;
 
-  /* ---------- Index toggle ---------- */
-  toggle.addEventListener('click', function () {
-    body.classList.toggle('index-open');
+  function animate() {
+    current += (target - current) * 0.12;
 
-    const isOpen = body.classList.contains('index-open');
-    toggle.textContent = isOpen ? 'Close' : 'Index';
-
-    if (!isOpen) strip.scrollLeft = 0;
-  });
-
-  /* ---------- Click a grid image → jump to it in scroll view ---------- */
-  const works = strip.querySelectorAll('.work');
-
-  works.forEach(function (work) {
-    work.addEventListener('click', function () {
-      // Only act when the grid is open
-      if (!body.classList.contains('index-open')) return;
-
-      const index = parseInt(work.dataset.index, 10);
-      const target = works[index];
-
-      // Close the grid
-      body.classList.remove('index-open');
-      toggle.textContent = 'Index';
-
-      // Wait a frame so the grid layout releases, then scroll to the image
-      requestAnimationFrame(function () {
-        // Re-enable horizontal scrolling on the strip first
-        strip.scrollLeft = target.offsetLeft - 40;
-      });
-    });
-  });
-
-  /* ---------- Escape closes the grid ---------- */
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && body.classList.contains('index-open')) {
-      body.classList.remove('index-open');
-      toggle.textContent = 'Index';
-      strip.scrollLeft = 0;
+    if (Math.abs(target - current) < 0.5) {
+      current = target;
+      strip.scrollLeft = current;
+      rafId = null;
+      return;
     }
-  });
+
+    strip.scrollLeft = current;
+    rafId = requestAnimationFrame(animate);
+  }
+
+  strip.addEventListener('wheel', function (e) {
+    e.preventDefault();
+
+    const maxScroll = strip.scrollWidth - strip.clientWidth;
+
+    target = Math.max(0, Math.min(maxScroll, target + e.deltaY));
+
+    if (rafId === null) {
+      current = strip.scrollLeft;
+      rafId = requestAnimationFrame(animate);
+    }
+  }, { passive: false });
 })();
